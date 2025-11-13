@@ -1,0 +1,80 @@
+/* Tarjeta de login moderna */
+.login-card {
+  background: #ffffff;
+  border-radius: 25px;
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Icono principal */
+.login-icon {
+  font-size: 5rem;
+  color: #4B0082;
+  margin-bottom: 1rem;
+}
+
+/* Títulos */
+.login-card h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.login-card p.subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Inputs con iconos integrados */
+.input-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.input-group i {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #4B0082;
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+input.form-control {
+  padding-left: 2.5rem;
+  border-radius: 12px;
+  height: 45px;
+  font-size: 1rem;
+}
+
+/* Botón principal */
+button.btn {
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: linear-gradient(90deg, #4B0082, #6a11cb);
+  border: none;
+  transition: 0.3s;
+}
+
+button.btn:hover {
+  background: linear-gradient(90deg, #6a11cb, #4B0082);
+  transform: translateY(-2px);
+}
+
+/* Mensaje de error */
+p.text-danger {
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
