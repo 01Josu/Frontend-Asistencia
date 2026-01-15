@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'] // corregido
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'asistencia-frontend';

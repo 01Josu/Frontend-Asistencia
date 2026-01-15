@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { LoginService, LoginResponse } from '../services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -13,23 +13,40 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   usuario = '';
-  contrasena = ''; // <-- cambió de "contraseña" a "contrasena"
+  contrasena = '';
   mensaje = '';
+  loading = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private loginService: LoginService, private router: Router) {}
 
   login() {
-    this.http.post('http://localhost:8080/api/login', {
-      usuario: this.usuario,
-      contraseña: this.contrasena // aquí no hay problema porque el backend espera "contraseña"
-    }).subscribe((res: any) => {
-      if(res.success) {
-        localStorage.setItem('idEmpleado', res.empleado.id);
-        localStorage.setItem('nombreEmpleado', res.empleado.nombre);
-        this.router.navigate(['/asistencia']);
-      } else {
-        this.mensaje = res.mensaje;
+    // Validación local
+    if (!this.usuario || !this.contrasena) {
+      this.mensaje = 'Usuario y contraseña son obligatorios';
+      return;
+    }
+
+    this.loading = true;
+    this.mensaje = '';
+
+    this.loginService.login(this.usuario, this.contrasena).subscribe({
+      next: (res: LoginResponse) => {
+        this.loading = false;
+        if (res.success && res.idUsuario && res.idEmpleado) {
+          localStorage.setItem('idUsuario', res.idUsuario.toString());
+          localStorage.setItem('idEmpleado', res.idEmpleado.toString());
+          localStorage.setItem('nombres', res.nombres!);
+          localStorage.setItem('apellidos', res.apellidos!);
+          this.router.navigate(['/asistencia']);
+        } else {
+          this.mensaje = res.mensaje || 'Error inesperado';
+        }
+      },
+      error: () => {
+        this.loading = false;
+        this.mensaje = 'Error al conectar con el servidor';
       }
     });
   }
 }
+

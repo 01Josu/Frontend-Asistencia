@@ -1,47 +1,70 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- IMPORTAR
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AsistenciaService, MarcarAsistenciaResponse, Asistencia } from '../services/asistencia.service';
 
 @Component({
   selector: 'app-asistencia',
-  standalone: true, // <-- marcar como standalone
-  imports: [CommonModule], // <-- agregar aquí
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './asistencia.component.html',
   styleUrls: ['./asistencia.component.css']
 })
-export class AsistenciaComponent {
+export class AsistenciaComponent implements OnInit {
   mensaje = '';
+  asistencias: Asistencia[] = [];
+  idUsuario!: number;
+  idEmpleado!: number;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private asistenciaService: AsistenciaService, private router: Router) {}
+
+  ngOnInit() {
+    const storedIdUsuario = localStorage.getItem('idUsuario');
+    const storedIdEmpleado = localStorage.getItem('idEmpleado');
+
+    if (!storedIdUsuario || !storedIdEmpleado) {
+      this.router.navigate(['/']); 
+      return;
+    }
+
+    this.idUsuario = +storedIdUsuario;
+    this.idEmpleado = +storedIdEmpleado;
+
+    this.cargarAsistencias();
+  }
 
   marcarEntrada() {
-    const idEmpleado = localStorage.getItem('idEmpleado') || '';
-    const nombre = localStorage.getItem('nombreEmpleado') || '';
-
-    this.http.post('http://localhost:8080/api/asistencia/marcarEntrada', { idEmpleado, nombre })
-      .subscribe((res: any) => {
+    this.asistenciaService.marcarEntrada(this.idUsuario).subscribe({
+      next: (res: MarcarAsistenciaResponse) => {
         this.mensaje = res.mensaje;
-      }, err => {
-        this.mensaje = 'Error al registrar entrada';
-      });
+        this.cargarAsistencias();
+      },
+      error: () => this.mensaje = 'Error al registrar entrada'
+    });
   }
 
   marcarSalida() {
-    const idEmpleado = localStorage.getItem('idEmpleado') || '';
-    const nombre = localStorage.getItem('nombreEmpleado') || '';
-
-    this.http.post('http://localhost:8080/api/asistencia/marcarSalida', { idEmpleado, nombre })
-      .subscribe((res: any) => {
+    this.asistenciaService.marcarSalida(this.idUsuario).subscribe({
+      next: (res: MarcarAsistenciaResponse) => {
         this.mensaje = res.mensaje;
-      }, err => {
-        this.mensaje = 'Error al registrar salida';
-      });
+        this.cargarAsistencias();
+      },
+      error: () => this.mensaje = 'Error al registrar salida'
+    });
+  }
+
+  cargarAsistencias() {
+    this.asistenciaService.listarPorEmpleado(this.idEmpleado).subscribe({
+      next: (res) => this.asistencias = res,
+      error: () => this.mensaje = 'Error al cargar asistencias'
+    });
   }
 
   logout() {
+    localStorage.removeItem('idUsuario');
     localStorage.removeItem('idEmpleado');
-    localStorage.removeItem('nombreEmpleado');
-    this.router.navigate(['']);
+    localStorage.removeItem('nombres');
+    localStorage.removeItem('apellidos');
+    this.router.navigate(['/']);
   }
 }
