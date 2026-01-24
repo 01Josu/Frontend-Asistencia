@@ -1,70 +1,125 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { AsistenciaService, MarcarAsistenciaResponse, Asistencia } from '../services/asistencia.service';
+import { Router, RouterModule } from '@angular/router';
+import {
+  AsistenciaService,
+  MarcarAsistenciaResponse
+} from '../services/asistencia.service';
 
 @Component({
   selector: 'app-asistencia',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './asistencia.component.html',
   styleUrls: ['./asistencia.component.css']
 })
 export class AsistenciaComponent implements OnInit {
+
   mensaje = '';
-  asistencias: Asistencia[] = [];
+
   idUsuario!: number;
-  idEmpleado!: number;
+  nombres = '';
+  apellidos = '';
 
-  constructor(private asistenciaService: AsistenciaService, private router: Router) {}
+  constructor(
+    private asistenciaService: AsistenciaService,
+    private router: Router
+  ) {}
 
-  ngOnInit() {
-    const storedIdUsuario = localStorage.getItem('idUsuario');
-    const storedIdEmpleado = localStorage.getItem('idEmpleado');
+  ngOnInit(): void {
+    const idUsuario = localStorage.getItem('idUsuario');
 
-    if (!storedIdUsuario || !storedIdEmpleado) {
-      this.router.navigate(['/']); 
+    if (!idUsuario) {
+      this.router.navigate(['/']);
       return;
     }
 
-    this.idUsuario = +storedIdUsuario;
-    this.idEmpleado = +storedIdEmpleado;
+    this.idUsuario = +idUsuario;
 
-    this.cargarAsistencias();
+    this.nombres = localStorage.getItem('nombres') || '';
+    this.apellidos = localStorage.getItem('apellidos') || '';
   }
 
-  marcarEntrada() {
-    this.asistenciaService.marcarEntrada(this.idUsuario).subscribe({
-      next: (res: MarcarAsistenciaResponse) => {
-        this.mensaje = res.mensaje;
-        this.cargarAsistencias();
+  marcarEntrada(): void {
+    this.obtenerUbicacion((lat, lng) => {
+
+      console.log('📤 ENTRADA → Enviando al backend:', {
+        idUsuario: this.idUsuario,
+        latitud: lat,
+        longitud: lng
+      });
+
+      this.asistenciaService.marcarEntrada({
+        idUsuario: this.idUsuario,
+        latitud: lat,
+        longitud: lng
+      }).subscribe({
+        next: (res: MarcarAsistenciaResponse) => {
+          this.mensaje = res.mensaje;
+        },
+        error: (err) => {
+          this.mensaje = err.error?.mensaje || 'Error al registrar entrada';
+        }
+      });
+    });
+  }
+
+  marcarSalida(): void {
+    this.obtenerUbicacion((lat, lng) => {
+
+      console.log('📤 SALIDA → Enviando al backend:', {
+        idUsuario: this.idUsuario,
+        latitud: lat,
+        longitud: lng
+      });
+
+      this.asistenciaService.marcarSalida({
+        idUsuario: this.idUsuario,
+        latitud: lat,
+        longitud: lng
+      }).subscribe({
+        next: (res: MarcarAsistenciaResponse) => {
+          this.mensaje = res.mensaje;
+        },
+        error: (err) => {
+          this.mensaje = err.error?.mensaje || 'Error al registrar salida';
+        }
+      });
+    });
+  }
+
+  obtenerUbicacion(callback: (lat: number, lng: number) => void): void {
+    if (!navigator.geolocation) {
+      this.mensaje = 'Tu navegador no soporta geolocalización';
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        console.log('📍 FRONTEND - Ubicación detectada');
+        console.log('Latitud:', lat);
+        console.log('Longitud:', lng);
+        console.log('Precisión (metros):', pos.coords.accuracy);
+
+        callback(lat, lng);
       },
-      error: () => this.mensaje = 'Error al registrar entrada'
-    });
-  }
-
-  marcarSalida() {
-    this.asistenciaService.marcarSalida(this.idUsuario).subscribe({
-      next: (res: MarcarAsistenciaResponse) => {
-        this.mensaje = res.mensaje;
-        this.cargarAsistencias();
+      err => {
+        console.error('❌ Error geolocalización:', err);
+        this.mensaje = 'Debes permitir la ubicación para marcar asistencia';
       },
-      error: () => this.mensaje = 'Error al registrar salida'
-    });
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
   }
 
-  cargarAsistencias() {
-    this.asistenciaService.listarPorEmpleado(this.idEmpleado).subscribe({
-      next: (res) => this.asistencias = res,
-      error: () => this.mensaje = 'Error al cargar asistencias'
-    });
-  }
-
-  logout() {
-    localStorage.removeItem('idUsuario');
-    localStorage.removeItem('idEmpleado');
-    localStorage.removeItem('nombres');
-    localStorage.removeItem('apellidos');
+  logout(): void {
+    localStorage.clear();
     this.router.navigate(['/']);
   }
 }

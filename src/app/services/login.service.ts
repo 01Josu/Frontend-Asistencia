@@ -11,10 +11,12 @@ export interface LoginRequest {
 export interface LoginResponse {
   success: boolean;
   mensaje: string;
+  token?: string;
   idUsuario?: number;
   idEmpleado?: number;
   nombres?: string;
   apellidos?: string;
+  rol?: string;
 }
 
 @Injectable({
@@ -22,7 +24,7 @@ export interface LoginResponse {
 })
 export class LoginService {
 
-  private baseUrl = `${environment.apiUrl}/login`; // <-- ahora usa environment
+  private baseUrl = `${environment.apiUrl}/login`;
 
   constructor(private http: HttpClient) {}
 
