@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import {
@@ -23,7 +23,8 @@ export class AsistenciaComponent implements OnInit {
 
   constructor(
     private asistenciaService: AsistenciaService,
-    private router: Router
+    private router: Router,
+    private zone: NgZone   // 👈 IMPORTANTE
   ) {}
 
   ngOnInit(): void {
@@ -35,30 +36,24 @@ export class AsistenciaComponent implements OnInit {
     }
 
     this.idUsuario = +idUsuario;
-
-    this.nombres = localStorage.getItem('nombres') || '';
-    this.apellidos = localStorage.getItem('apellidos') || '';
   }
 
   marcarEntrada(): void {
     this.obtenerUbicacion((lat, lng) => {
-
-      console.log('📤 ENTRADA → Enviando al backend:', {
-        idUsuario: this.idUsuario,
-        latitud: lat,
-        longitud: lng
-      });
-
       this.asistenciaService.marcarEntrada({
         idUsuario: this.idUsuario,
         latitud: lat,
         longitud: lng
       }).subscribe({
         next: (res: MarcarAsistenciaResponse) => {
-          this.mensaje = res.mensaje;
+          this.zone.run(() => {           // 👈 FUERZA REFRESH
+            this.mensaje = res.mensaje;
+          });
         },
         error: (err) => {
-          this.mensaje = err.error?.mensaje || 'Error al registrar entrada';
+          this.zone.run(() => {
+            this.mensaje = err.error?.mensaje || 'Error al registrar entrada';
+          });
         }
       });
     });
@@ -66,54 +61,34 @@ export class AsistenciaComponent implements OnInit {
 
   marcarSalida(): void {
     this.obtenerUbicacion((lat, lng) => {
-
-      console.log('📤 SALIDA → Enviando al backend:', {
-        idUsuario: this.idUsuario,
-        latitud: lat,
-        longitud: lng
-      });
-
       this.asistenciaService.marcarSalida({
         idUsuario: this.idUsuario,
         latitud: lat,
         longitud: lng
       }).subscribe({
         next: (res: MarcarAsistenciaResponse) => {
-          this.mensaje = res.mensaje;
+          this.zone.run(() => {
+            this.mensaje = res.mensaje;
+          });
         },
         error: (err) => {
-          this.mensaje = err.error?.mensaje || 'Error al registrar salida';
+          this.zone.run(() => {
+            this.mensaje = err.error?.mensaje || 'Error al registrar salida';
+          });
         }
       });
     });
   }
 
   obtenerUbicacion(callback: (lat: number, lng: number) => void): void {
-    if (!navigator.geolocation) {
-      this.mensaje = 'Tu navegador no soporta geolocalización';
-      return;
-    }
-
     navigator.geolocation.getCurrentPosition(
       pos => {
-        const lat = pos.coords.latitude;
-        const lng = pos.coords.longitude;
-
-        console.log('📍 FRONTEND - Ubicación detectada');
-        console.log('Latitud:', lat);
-        console.log('Longitud:', lng);
-        console.log('Precisión (metros):', pos.coords.accuracy);
-
-        callback(lat, lng);
+        callback(pos.coords.latitude, pos.coords.longitude);
       },
       err => {
-        console.error('❌ Error geolocalización:', err);
-        this.mensaje = 'Debes permitir la ubicación para marcar asistencia';
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
+        this.zone.run(() => {
+          this.mensaje = 'Debes permitir la ubicación para marcar asistencia';
+        });
       }
     );
   }
