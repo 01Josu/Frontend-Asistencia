@@ -122,3 +122,100 @@ button.btn-logout:hover {
     font-size: 1rem;
   }
 }
+
+
+/* =========================
+   MODAL JUSTIFICACIÓN
+========================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 79, 173, 0.25);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* Modal tipo bottom sheet (mobile first) */
+.modal-justificacion {
+  background: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px 20px 0 0;
+  padding: 1.8rem 1.5rem 2rem;
+  box-shadow: 0 -8px 20px rgba(0, 111, 255, 0.25);
+  animation: slideUp 0.25s ease;
+}
+
+/* Animación suave */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-justificacion h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #004aad;
+  font-weight: 700;
+}
+
+.modal-justificacion .tipo {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  color: #4a4a4a;
+}
+
+.modal-justificacion textarea {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.9rem;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border: 1px solid #cce0ff;
+  outline: none;
+  resize: none;
+}
+
+.modal-justificacion textarea:focus {
+  border-color: #006FFF;
+  box-shadow: 0 0 0 2px rgba(0, 111, 255, 0.15);
+}
+
+/* Acciones */
+.modal-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+}
+
+/* Botones estilo corporativo */
+.modal-actions button {
+  flex: 1;
+  height: 48px;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+}
+
+/* Cancelar */
+.btn-cancelar {
+  background: #f1f5ff;
+  color: #4a4a4a;
+}
+
+/* Enviar */
+.btn-enviar {
+  background: linear-gradient(90deg, #006FFF, #004aad);
+  color: #ffffff;
+}
+
+.btn-enviar:disabled {
+  opacity: 0.5;
+}

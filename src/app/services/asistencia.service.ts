@@ -6,9 +6,17 @@ import { environment } from '../../environments/environment';
 export interface MarcarAsistenciaResponse {
   success: boolean;
   mensaje: string;
+
+  idAsistencia?: number;
+  estadoAsistencia?: string;
+
   fecha?: string;
   hora?: string;
+  
   tipo?: 'ENTRADA' | 'SALIDA';
+
+  requiereJustificacion?: boolean;
+  tipoJustificacion?: 'TARDANZA' | 'SOBRETIEMPO' | null;
 }
 
 @Injectable({

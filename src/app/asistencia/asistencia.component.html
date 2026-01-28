@@ -34,3 +34,45 @@
 
   </div>
 </div>
+
+
+<!-- MODAL JUSTIFICACIÓN -->
+<div class="modal-backdrop" *ngIf="mostrarModalJustificacion">
+  <div class="modal-justificacion">
+
+    <h3>
+      {{ tipoJustificacion === 'TARDANZA'
+          ? 'Justificación por Tardanza'
+          : 'Justificación por Horas Extras' }}
+    </h3>
+
+    <p class="tipo">
+      {{ tipoJustificacion === 'TARDANZA'
+          ? 'Indica el motivo de tu llegada fuera de horario.'
+          : 'Indica el motivo de tu permanencia fuera del horario laboral.' }}
+    </p>
+
+    <textarea
+      rows="4"
+      [(ngModel)]="motivoJustificacion"
+      placeholder="Escribe tu justificación aquí...">
+    </textarea>
+
+    <div class="modal-actions">
+      <button
+        class="btn-cancelar"
+        (click)="mostrarModalJustificacion = false">
+        Cancelar
+      </button>
+
+      <button
+        class="btn-enviar"
+        [disabled]="!motivoJustificacion.trim()"
+        (click)="enviarJustificacion()">
+        Enviar
+      </button>
+    </div>
+
+  </div>
+</div>
+
