@@ -1,0 +1,253 @@
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="fw-bold">Empleados</h4>
+  <button class="btn btn-primary" (click)="nuevo()">
+    <i class="bi bi-plus-circle me-1"></i> Nuevo
+  </button>
+</div>
+
+<!-- MENSAJES -->
+<div *ngIf="mensajeError" class="alert alert-danger alert-dismissible fade show">
+  {{ mensajeError }}
+  <button type="button" class="btn-close" (click)="mensajeError = ''"></button>
+</div>
+
+<div *ngIf="mensajeOk" class="alert alert-success alert-dismissible fade show">
+  {{ mensajeOk }}
+  <button type="button" class="btn-close" (click)="mensajeOk = ''"></button>
+</div>
+
+<!-- 🔍 BUSCADOR POR ID -->
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+
+      <div class="col-md-4">
+        <label class="form-label">Buscar por ID</label>
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="buscarId"
+          placeholder="Ej: 7"
+        >
+      </div>
+
+      <div class="col-md-auto">
+        <button
+          class="btn btn-primary me-2"
+          (click)="buscarEmpleado()"
+          [disabled]="buscando"
+        >
+          <span *ngIf="!buscando">
+            <i class="bi bi-search"></i> Buscar
+          </span>
+          <span *ngIf="buscando">
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Buscando...
+          </span>
+        </button>
+
+        <button
+          class="btn btn-secondary"
+          (click)="limpiarBusqueda()"
+        >
+          <i class="bi bi-arrow-counterclockwise"></i>
+          Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TABLA -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>Código</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Ingreso</th>
+        <th>Activo</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngIf="empleados.length === 0">
+        <td colspan="6" class="text-center text-muted">
+          No hay empleados para mostrar
+        </td>
+      </tr>
+
+      <tr *ngFor="let e of empleados">
+        <td>{{ e.codigoEmpleado }}</td>
+        <td>{{ e.nombres }}</td>
+        <td>{{ e.apellidos }}</td>
+        <td>{{ e.fechaIngreso | date }}</td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="e.activo ? 'bg-success' : 'bg-danger'"
+          >
+            {{ e.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td class="text-center">
+          <button
+            class="btn btn-sm btn-warning me-1"
+            (click)="editar(e)"
+          >
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="eliminar(e)"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="empleadoModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          {{ editando ? 'Editar Empleado' : 'Nuevo Empleado' }}
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form #empForm="ngForm">
+
+          <!-- CÓDIGO -->
+          <div class="mb-2">
+            <label>Código</label>
+            <input
+              class="form-control"
+              name="codigoEmpleado"
+              [(ngModel)]="form.codigoEmpleado"
+              required
+              pattern="^EMP.*"
+              maxlength="10"
+              #codigo="ngModel"
+            >
+
+            <div
+              class="text-danger small"
+              *ngIf="codigo.invalid && (codigo.touched || empForm.submitted)"
+            >
+              <div *ngIf="codigo.errors?.['required']">
+                El código es obligatorio
+              </div>
+              <div *ngIf="codigo.errors?.['pattern']">
+                Debe iniciar con <b>EMP</b>
+              </div>
+              <div *ngIf="codigo.errors?.['maxlength']">
+                Máximo 10 caracteres
+              </div>
+            </div>
+          </div>
+
+          <!-- NOMBRES -->
+          <div class="mb-2">
+            <label>Nombres</label>
+            <input
+              class="form-control"
+              name="nombres"
+              [(ngModel)]="form.nombres"
+              required
+              pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"
+              #nombres="ngModel"
+            >
+
+            <div
+              class="text-danger small"
+              *ngIf="nombres.invalid && (nombres.touched || empForm.submitted)"
+            >
+              <div *ngIf="nombres.errors?.['required']">
+                Los nombres son obligatorios
+              </div>
+              <div *ngIf="nombres.errors?.['pattern']">
+                Solo se permiten letras
+              </div>
+            </div>
+          </div>
+
+          <!-- APELLIDOS -->
+          <div class="mb-2">
+            <label>Apellidos</label>
+            <input
+              class="form-control"
+              name="apellidos"
+              [(ngModel)]="form.apellidos"
+              required
+              pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"
+              #apellidos="ngModel"
+            >
+
+            <div
+              class="text-danger small"
+              *ngIf="apellidos.invalid && (apellidos.touched || empForm.submitted)"
+            >
+              <div *ngIf="apellidos.errors?.['required']">
+                Los apellidos son obligatorios
+              </div>
+              <div *ngIf="apellidos.errors?.['pattern']">
+                Solo se permiten letras
+              </div>
+            </div>
+          </div>
+
+          <!-- FECHA -->
+          <div class="mb-2">
+            <label>Fecha Ingreso</label>
+            <input
+              type="date"
+              class="form-control"
+              name="fechaIngreso"
+              [(ngModel)]="form.fechaIngreso"
+              required
+              #fecha="ngModel"
+            >
+
+            <div
+              class="text-danger small"
+              *ngIf="fecha.invalid && (fecha.touched || empForm.submitted)"
+            >
+              La fecha de ingreso es obligatoria
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+
+        <button
+          class="btn btn-primary"
+          (click)="guardar()"
+          [disabled]="guardando || empForm.invalid"
+        >
+          <span *ngIf="!guardando">Guardar</span>
+          <span *ngIf="guardando">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Guardando...
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

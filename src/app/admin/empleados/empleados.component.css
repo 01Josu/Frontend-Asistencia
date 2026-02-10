@@ -1,0 +1,70 @@
+/* CONTENEDOR */
+.empleados-container {
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* HEADER */
+.header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-weight: 700;
+  margin: 0;
+}
+
+.subtitle {
+  color: #6c757d;
+}
+
+/* BOTÓN */
+.btn-new {
+  padding: 0.6rem 1.2rem;
+}
+
+/* CARDS */
+.search-card,
+.table-card {
+  border: none;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+  margin-bottom: 1.5rem;
+}
+
+/* TABLA */
+.table thead th {
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  color: #495057;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* ESTADOS */
+.status-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-badge.inactive {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+/* MODAL */
+.modal-soft {
+  border-radius: 16px;
+}

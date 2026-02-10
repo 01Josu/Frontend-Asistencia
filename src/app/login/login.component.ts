@@ -39,21 +39,17 @@ export class LoginComponent {
       next: (res: LoginResponse) => {
         this.loading = false;
 
-        // ❌ Login fallido
         if (!res.success || !res.token || !res.idUsuario) {
           this.mensaje = res.mensaje || 'Error inesperado';
           return;
         }
 
-        // ⚠️ Login OK pero SIN empleado
         if (!res.idEmpleado) {
           this.mensaje = 'Tu usuario no tiene un empleado asignado. Comunícate con RRHH.';
-          // 🔐 No dejamos sesión abierta
           localStorage.removeItem('token');
           return;
         }
 
-        // ✅ Login OK + empleado
         localStorage.setItem('token', res.token);
         localStorage.setItem('idUsuario', res.idUsuario.toString());
         localStorage.setItem('idEmpleado', res.idEmpleado.toString());
@@ -61,7 +57,20 @@ export class LoginComponent {
         localStorage.setItem('apellidos', res.apellidos || '');
         localStorage.setItem('rol', res.rol || '');
 
-        this.router.navigate(['/asistencia']);
+        switch (res.rol) {
+          case 'ADMIN':
+            this.router.navigate(['/admin']);
+            break;
+
+          case 'USER':
+            this.router.navigate(['/asistencia']);
+            break;
+
+          default:
+            // fallback seguro
+            this.router.navigate(['/login']);
+        }
+
       },
       error: () => {
         this.loading = false;
