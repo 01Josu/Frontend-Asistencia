@@ -123,85 +123,116 @@ button.btn-logout:hover {
   }
 }
 
-
 /* =========================
-   MODAL JUSTIFICACIÓN
+   MODAL JUSTIFICACIÓN PRO
 ========================= */
 
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 79, 173, 0.25);
+  background: rgba(0, 79, 173, 0.35);
+  backdrop-filter: blur(4px);
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
+  padding: 1rem;
   z-index: 999;
+  animation: fadeIn 0.2s ease;
 }
 
-/* Modal tipo bottom sheet (mobile first) */
+/* Animación suave de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal tipo tarjeta premium */
 .modal-justificacion {
   background: #ffffff;
   width: 100%;
-  max-width: 420px;
-  border-radius: 20px 20px 0 0;
-  padding: 1.8rem 1.5rem 2rem;
-  box-shadow: 0 -8px 20px rgba(0, 111, 255, 0.25);
-  animation: slideUp 0.25s ease;
+  max-width: 400px;
+  max-height: 85vh;
+  border-radius: 22px;
+  padding: 1.8rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 15px 40px rgba(0, 74, 173, 0.25);
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.2s ease;
+  overflow: hidden;
 }
 
-/* Animación suave */
-@keyframes slideUp {
+/* Animación ligera */
+@keyframes scaleIn {
   from {
-    transform: translateY(100%);
+    transform: scale(0.95);
+    opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
+/* Header */
 .modal-justificacion h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: #004aad;
   font-weight: 700;
+  text-align: center;
 }
 
+/* Texto descriptivo */
 .modal-justificacion .tipo {
-  margin-top: 0.4rem;
+  margin-top: 0.5rem;
   font-size: 0.95rem;
   color: #4a4a4a;
+  text-align: center;
+  line-height: 1.4;
 }
 
+/* Área central scrolleable */
 .modal-justificacion textarea {
   width: 100%;
-  margin-top: 1rem;
-  padding: 0.9rem;
+  margin-top: 1.2rem;
+  padding: 1rem;
   font-size: 0.95rem;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid #cce0ff;
   outline: none;
   resize: none;
+  background: #f9fbff;
+  transition: all 0.2s ease;
+
+  min-height: 100px;
+  max-height: 180px;
+  overflow-y: auto;
 }
 
+/* Focus elegante */
 .modal-justificacion textarea:focus {
   border-color: #006FFF;
-  box-shadow: 0 0 0 2px rgba(0, 111, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 111, 255, 0.15);
+  background: #ffffff;
 }
 
-/* Acciones */
+/* Footer fijo dentro del modal */
 .modal-actions {
   display: flex;
   gap: 0.8rem;
-  margin-top: 1.2rem;
+  margin-top: auto; /* 👈 empuja los botones abajo */
+  padding-top: 1rem;
 }
 
-/* Botones estilo corporativo */
+/* Botones base */
 .modal-actions button {
   flex: 1;
-  height: 48px;
-  border-radius: 10px;
+  height: 50px;
+  border-radius: 12px;
   font-weight: 600;
+  font-size: 0.95rem;
   border: none;
+  transition: all 0.25s ease;
 }
 
 /* Cancelar */
@@ -210,12 +241,22 @@ button.btn-logout:hover {
   color: #4a4a4a;
 }
 
+.btn-cancelar:hover {
+  background: #e1e9ff;
+}
+
 /* Enviar */
 .btn-enviar {
   background: linear-gradient(90deg, #006FFF, #004aad);
   color: #ffffff;
+  box-shadow: 0 6px 15px rgba(0, 111, 255, 0.3);
+}
+
+.btn-enviar:hover {
+  transform: translateY(-2px);
 }
 
 .btn-enviar:disabled {
   opacity: 0.5;
+  box-shadow: none;
 }
