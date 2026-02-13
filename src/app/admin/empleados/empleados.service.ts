@@ -100,4 +100,23 @@ export class EmpleadosService {
   eliminar(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/${id}`, this.headers());
   }
+
+  // 🔍 Buscar empleados por nombre
+  buscarPorNombre(nombre: string): Observable<Empleado[]> {
+    return this.http
+      .get<any[]>(`${this.baseUrl}/buscar-por-nombre?nombre=${encodeURIComponent(nombre)}`, this.headers())
+      .pipe(
+        map(data =>
+          data.map(e => ({
+            id: e.idEmpleado,
+            codigoEmpleado: e.codigoEmpleado,
+            nombres: e.nombres,
+            apellidos: e.apellidos,
+            fechaIngreso: e.fechaIngreso,
+            activo: e.activo
+          }))
+        )
+      );
+  }
+
 }

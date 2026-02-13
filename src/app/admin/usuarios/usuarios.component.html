@@ -1,1 +1,146 @@
 <p>usuarios works!</p>
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="fw-bold">Usuarios</h4>
+  <button class="btn btn-primary" (click)="nuevo()">
+    <i class="bi bi-plus-circle me-1"></i> Nuevo
+  </button>
+</div>
+
+<!-- MENSAJES -->
+<div *ngIf="mensajeError" class="alert alert-danger alert-dismissible fade show">
+  {{ mensajeError }}
+  <button type="button" class="btn-close" (click)="mensajeError = ''"></button>
+</div>
+
+<div *ngIf="mensajeOk" class="alert alert-success alert-dismissible fade show">
+  {{ mensajeOk }}
+  <button type="button" class="btn-close" (click)="mensajeOk = ''"></button>
+</div>
+
+<!-- BUSCADOR -->
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+
+      <div class="col-md-4">
+        <label class="form-label">Buscar por ID</label>
+        <input type="number" class="form-control" [(ngModel)]="buscarId">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Buscar por Usuario</label>
+        <input type="text" class="form-control" [(ngModel)]="buscarTexto" (input)="buscarPorNombreLive()" placeholder="Ej: Luisa">
+      </div>
+
+      <div class="col-md-auto">
+        <button class="btn btn-primary me-2" (click)="buscarUsuario()" [disabled]="buscando">
+          <span *ngIf="!buscando"><i class="bi bi-search"></i> Buscar</span>
+          <span *ngIf="buscando">
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Buscando...
+          </span>
+        </button>
+        <button class="btn btn-secondary" (click)="limpiarBusqueda()">
+          <i class="bi bi-arrow-counterclockwise"></i> Limpiar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TABLA -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-primary">
+      <tr>
+        <th>Usuario</th>
+        <th>Rol</th>
+        <th>Activo</th>
+        <th class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="usuarios.length === 0">
+        <td colspan="4" class="text-center text-muted">No hay usuarios para mostrar</td>
+      </tr>
+      <tr *ngFor="let u of usuarios">
+        <td>{{ u.usuario }}</td>
+        <td>{{ u.rol }}</td>
+        <td>
+          <span class="badge" [ngClass]="u.activo ? 'bg-success' : 'bg-danger'">
+            {{ u.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+        </td>
+        <td class="text-center">
+          <button class="btn btn-sm btn-warning me-1" (click)="editar(u)">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="eliminar(u)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL -->
+<div class="modal fade" id="usuarioModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">{{ editando ? 'Editar Usuario' : 'Nuevo Usuario' }}</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form #usrForm="ngForm">
+
+          <div class="mb-2">
+            <label>Usuario</label>
+            <input class="form-control" name="usuario" [(ngModel)]="form.usuario" required #usuario="ngModel">
+            <div *ngIf="usuario.invalid && (usuario.touched || usrForm.submitted)" class="text-danger small">
+              Usuario es obligatorio
+            </div>
+          </div>
+
+          <div class="mb-2" *ngIf="!editando">
+            <label>Contraseña</label>
+            <input type="password" class="form-control" name="password" [(ngModel)]="form.password" required #password="ngModel">
+            <div *ngIf="password.invalid && (password.touched || usrForm.submitted)" class="text-danger small">
+              Contraseña es obligatoria
+            </div>
+          </div>
+
+          <div class="mb-2">
+            <label>Rol</label>
+            <select class="form-select" name="rol" [(ngModel)]="form.rol" required #rol="ngModel">
+              <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+            </select>
+            <div *ngIf="rol.invalid && (rol.touched || usrForm.submitted)" class="text-danger small">
+              Seleccione un rol
+            </div>
+          </div>
+
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="activo" [(ngModel)]="form.activo">
+            <label class="form-check-label">Activo</label>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary" (click)="guardar()" [disabled]="guardando || usrForm.invalid">
+          <span *ngIf="!guardando">Guardar</span>
+          <span *ngIf="guardando"><span class="spinner-border spinner-border-sm me-2"></span>Guardando...</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

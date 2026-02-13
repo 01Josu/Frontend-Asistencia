@@ -21,6 +21,7 @@ export class EmpleadosComponent implements OnInit {
   buscarId?: number;
   buscando = false;
 
+  buscarTexto?: string;
 
   editando = false;
 
@@ -180,36 +181,79 @@ export class EmpleadosComponent implements OnInit {
   buscarEmpleado() {
     this.mensajeError = '';
     this.mensajeOk = '';
+    this.buscando = true;
 
-    if (!this.buscarId || this.buscarId <= 0) {
-      this.mensajeError = 'Ingrese un ID válido para buscar';
+    // Buscar por ID si se ingresó un número válido
+    if (this.buscarId && this.buscarId > 0) {
+      this.empleadosService.obtener(this.buscarId).subscribe({
+        next: emp => {
+          this.empleados = [emp]; // Mostrar solo el resultado
+          this.buscando = false;
+          this.mensajeOk = 'Empleado encontrado';
+        },
+        error: err => {
+          this.buscando = false;
+          this.empleados = [];
+          this.mensajeError =
+            err.status === 404
+              ? 'Empleado no encontrado'
+              : 'Error al buscar empleado';
+        }
+      });
+    } 
+    // Buscar por nombre si se ingresó texto
+    else if (this.buscarTexto && this.buscarTexto.trim().length > 0) {
+      this.empleadosService.buscarPorNombre(this.buscarTexto.trim()).subscribe({
+        next: data => {
+          this.empleados = data;
+          this.buscando = false;
+          this.mensajeOk = data.length > 0 ? 'Empleados encontrados' : 'No se encontraron empleados';
+        },
+        error: err => {
+          this.buscando = false;
+          this.empleados = [];
+          this.mensajeError = 'Error al buscar empleados';
+        }
+      });
+    } 
+    else {
+      this.buscando = false;
+      this.mensajeError = 'Ingrese un ID o un nombre para buscar';
+    }
+  }
+
+
+  limpiarBusqueda() {
+    this.buscarId = undefined;
+    this.buscarTexto = '';
+    this.mensajeError = '';
+    this.mensajeOk = '';
+    this.listar();
+  }
+
+  buscarPorNombreLive() {
+    // si está vacío, listamos todos
+    if (!this.buscarTexto || this.buscarTexto.trim() === '') {
+      this.listar();
       return;
     }
 
     this.buscando = true;
+    this.mensajeError = '';
+    this.mensajeOk = '';
 
-    this.empleadosService.obtener(this.buscarId).subscribe({
-      next: emp => {
-        this.empleados = [emp]; // 🔑 reemplaza la tabla con el resultado
+    this.empleadosService.buscarPorNombre(this.buscarTexto.trim()).subscribe({
+      next: data => {
+        this.empleados = data;
         this.buscando = false;
-        this.mensajeOk = 'Empleado encontrado';
+        this.mensajeOk = data.length > 0 ? '' : 'No se encontraron empleados';
       },
       error: err => {
         this.buscando = false;
         this.empleados = [];
-        this.mensajeError =
-          err.status === 404
-            ? 'Empleado no encontrado'
-            : 'Error al buscar empleado';
+        this.mensajeError = 'Error al buscar empleados';
       }
     });
-  }
-
-  limpiarBusqueda() {
-    this.buscarId = undefined;
-    this.mensajeError = '';
-    this.mensajeOk = '';
-    this.listar();
   }
 
 }

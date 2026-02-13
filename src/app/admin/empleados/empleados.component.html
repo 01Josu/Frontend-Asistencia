@@ -17,11 +17,12 @@
   <button type="button" class="btn-close" (click)="mensajeOk = ''"></button>
 </div>
 
-<!-- 🔍 BUSCADOR POR ID -->
+<!-- 🔍 BUSCADOR POR ID O NOMBRE -->
 <div class="card mb-3">
   <div class="card-body">
     <div class="row g-2 align-items-end">
 
+      <!-- Buscar por ID -->
       <div class="col-md-4">
         <label class="form-label">Buscar por ID</label>
         <input
@@ -29,6 +30,18 @@
           class="form-control"
           [(ngModel)]="buscarId"
           placeholder="Ej: 7"
+        >
+      </div>
+
+      <!-- Buscar por Nombre -->
+      <div class="col-md-4">
+        <label class="form-label">Buscar por Nombre</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="buscarTexto"
+          placeholder="Ej: Juan"
+          (input)="buscarPorNombreLive()"
         >
       </div>
 
@@ -140,7 +153,6 @@
               maxlength="10"
               #codigo="ngModel"
             >
-
             <div
               class="text-danger small"
               *ngIf="codigo.invalid && (codigo.touched || empForm.submitted)"
@@ -168,7 +180,6 @@
               pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"
               #nombres="ngModel"
             >
-
             <div
               class="text-danger small"
               *ngIf="nombres.invalid && (nombres.touched || empForm.submitted)"
@@ -193,7 +204,6 @@
               pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$"
               #apellidos="ngModel"
             >
-
             <div
               class="text-danger small"
               *ngIf="apellidos.invalid && (apellidos.touched || empForm.submitted)"
@@ -218,7 +228,6 @@
               required
               #fecha="ngModel"
             >
-
             <div
               class="text-danger small"
               *ngIf="fecha.invalid && (fecha.touched || empForm.submitted)"
@@ -234,7 +243,6 @@
         <button class="btn btn-secondary" data-bs-dismiss="modal">
           Cancelar
         </button>
-
         <button
           class="btn btn-primary"
           (click)="guardar()"
