@@ -1,0 +1,64 @@
+/* Contenedor */
+.toast-container {
+  position: fixed;
+  top: 20px;       /* ya no tan pegado arriba */
+  right: 20px;
+  z-index: 9999;
+}
+
+/* Caja principal */
+.mi-toast {
+  min-width: 300px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  opacity: 0;
+  transform: translateX(120%);
+  transition: all 0.4s ease-in-out;
+}
+
+/* Cuando aparece */
+.mi-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Cuando desaparece */
+.mi-toast.hide {
+  opacity: 0;
+  transform: translateX(120%);
+}
+
+/* Contenido */
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icono */
+.toast-icon {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Botón cerrar */
+.toast-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}

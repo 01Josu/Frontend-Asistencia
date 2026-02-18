@@ -4,7 +4,7 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export interface Usuario {
-  id: number;
+  idUsuario: number;
   usuario: string;
   rol: string;
   activo: boolean;
@@ -59,7 +59,10 @@ export class UsuarioService {
   }
 
   buscarPorNombre(nombre: string): Observable<Usuario[]> {
-    return this.http
-      .get<Usuario[]>(`${this.baseUrl}/buscar-por-nombre?nombre=${encodeURIComponent(nombre)}`, this.headers());
+    return this.http.get<Usuario[]>(
+      `${this.baseUrl}/buscar-por-nombre-u?nombre=${encodeURIComponent(nombre)}`,
+      this.headers()
+    );
   }
+
 }
