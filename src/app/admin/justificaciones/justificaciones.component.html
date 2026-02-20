@@ -1,1 +1,130 @@
-<p>justificaciones works!</p>
+<div class="card shadow">
+  <div class="card-header bg-primary text-white">
+    <h5 class="mb-0">Gestión de Justificaciones</h5>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Spinner -->
+    <div *ngIf="cargando" class="text-center my-4">
+      <div class="spinner-border text-primary"></div>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="error" class="alert alert-danger">
+      {{ error }}
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-responsive" *ngIf="!cargando && justificaciones.length > 0">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Empleado</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Motivo</th>
+            <th>Estado</th>
+            <th width="180">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let j of justificaciones">
+            <td>{{ j.nombres }} {{ j.apellidos }}</td>
+
+            <td>{{ j.fecha | date:'dd/MM/yyyy' }}</td>
+
+            <td>
+              <span class="badge bg-info">
+                {{ j.tipo }}
+              </span>
+            </td>
+
+            <td>{{ j.motivo }}</td>
+
+            <td>
+              <span *ngIf="j.aprobado" class="badge bg-success">
+                Aprobado
+              </span>
+              <span *ngIf="!j.aprobado" class="badge bg-warning text-dark">
+                Pendiente
+              </span>
+            </td>
+
+            <td>
+              <button
+                *ngIf="!j.aprobado"
+                class="btn btn-sm btn-success me-2"
+                (click)="cambiarEstado(j, true)">
+                Aprobar
+              </button>
+
+              <button
+                *ngIf="j.aprobado"
+                class="btn btn-sm btn-danger"
+                (click)="cambiarEstado(j, false)">
+                Rechazar
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 🔥 Información de registros -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+
+        <small class="text-muted">
+          Mostrando
+          {{ currentPage * pageSize + 1 }}
+          -
+          {{ (currentPage * pageSize + justificaciones.length) }}
+          de {{ totalElements }} registros
+        </small>
+
+        <!-- 🔥 Paginación -->
+        <nav *ngIf="totalPages > 1">
+          <ul class="pagination pagination-sm mb-0">
+
+            <!-- Anterior -->
+            <li class="page-item" [class.disabled]="currentPage === 0">
+              <button class="page-link"
+                      (click)="cambiarPagina(currentPage - 1)"
+                      [disabled]="currentPage === 0">
+                «
+              </button>
+            </li>
+
+            <!-- Números -->
+            <li class="page-item"
+                *ngFor="let page of [].constructor(totalPages); let i = index"
+                [class.active]="i === currentPage">
+
+              <button class="page-link" (click)="cambiarPagina(i)">
+                {{ i + 1 }}
+              </button>
+            </li>
+
+            <!-- Siguiente -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+              <button class="page-link"
+                      (click)="cambiarPagina(currentPage + 1)"
+                      [disabled]="currentPage === totalPages - 1">
+                »
+              </button>
+            </li>
+
+          </ul>
+        </nav>
+
+      </div>
+    </div>
+
+    <!-- Sin registros -->
+    <div *ngIf="!cargando && justificaciones.length === 0"
+         class="text-center text-muted my-4">
+      No hay justificaciones registradas
+    </div>
+
+  </div>
+</div>

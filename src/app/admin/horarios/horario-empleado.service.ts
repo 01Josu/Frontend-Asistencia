@@ -57,5 +57,4 @@ export class HorarioEmpleadoService {
   eliminar(id: number): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(`${this.baseUrl}/${id}`);
   }
-
 }

@@ -31,4 +31,12 @@ export class LoginService {
   login(usuario: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.baseUrl, { usuario, password });
   }
+
+  logout() {
+    return this.http.post(
+      `${environment.apiUrl}/logout`,
+      {},
+      { responseType: 'text' }
+    );
+  }
 }

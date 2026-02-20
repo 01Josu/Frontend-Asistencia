@@ -7,7 +7,7 @@ import {
 } from '../services/asistencia.service';
 import { FormsModule } from '@angular/forms';
 import { JustificacionService } from '../services/justificacion.service';
-
+import { LoginService } from '../services/login.service';
 
 @Component({
   selector: 'app-asistencia',
@@ -33,6 +33,7 @@ export class AsistenciaComponent implements OnInit {
   constructor(
     private asistenciaService: AsistenciaService,
     private justificacionService: JustificacionService,
+    private loginService: LoginService,
     private router: Router,
     private zone: NgZone
   ) {}
@@ -123,10 +124,21 @@ export class AsistenciaComponent implements OnInit {
   }
 
   logout(): void {
-    localStorage.clear();
-    this.router.navigate(['/']);
-  }
+    console.log('CLICK LOGOUT');
 
+    this.loginService.logout().subscribe({
+      next: () => {
+        console.log('LLAMÓ AL BACKEND');
+        localStorage.clear();
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error('ERROR BACKEND', err);
+        localStorage.clear();
+        this.router.navigate(['/']);
+      }
+    });
+  }
 
   enviarJustificacion(): void {
 
