@@ -1,1 +1,99 @@
-<p>reportes works!</p>
+<div class="container mt-4">
+
+  <h2 class="mb-3">Reportes</h2>
+
+  <!-- Filtros -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <label>Inicio</label>
+      <input type="date" [(ngModel)]="inicio" class="form-control">
+    </div>
+    <div class="col-md-4">
+      <label>Fin</label>
+      <input type="date" [(ngModel)]="fin" class="form-control">
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button class="btn btn-primary w-100" (click)="buscar()">
+        Buscar
+      </button>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{error}}
+  </div>
+
+  <!-- KPI Cards -->
+  <div *ngIf="dashboard" class="row text-center mb-4">
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm">
+        <h5>Asistencias</h5>
+        <strong class="fs-4">{{dashboard.totalAsistencias}}</strong>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm">
+        <h5>Tardanzas</h5>
+        <strong class="fs-4">{{dashboard.totalTardanzas}}</strong>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm">
+        <h5>Faltas</h5>
+        <strong class="fs-4">{{dashboard.totalFaltas}}</strong>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card p-3 shadow-sm">
+        <h5>Justificadas</h5>
+        <strong class="fs-4">{{dashboard.totalJustificadas}}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+            <h4 class="text-center">Estados</h4>
+            <canvas id="pieChart"></canvas>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-3 shadow-sm">
+            <h4 class="text-center">Tardanzas por Mes</h4>
+            <canvas id="barChart"></canvas>
+            </div>
+        </div>
+    </div>
+  <!-- Tabla -->
+  <div class="card p-3 shadow-sm">
+    <h4>Empleados</h4>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>Total</th>
+            <th>Puntuales</th>
+            <th>Tardanzas</th>
+            <th>Faltas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let emp of empleados">
+            <td>{{emp.nombres}} {{emp.apellidos}}</td>
+            <td>{{emp.total}}</td>
+            <td>{{emp.puntuales}}</td>
+            <td>{{emp.tardanzas}}</td>
+            <td>{{emp.faltas}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
