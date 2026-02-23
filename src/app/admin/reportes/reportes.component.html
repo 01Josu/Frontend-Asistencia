@@ -12,9 +12,13 @@
       <label>Fin</label>
       <input type="date" [(ngModel)]="fin" class="form-control">
     </div>
-    <div class="col-md-4 d-flex align-items-end">
-      <button class="btn btn-primary w-100" (click)="buscar()">
+    <div class="col-md-4 d-flex align-items-end gap-2">
+      <button class="btn btn-primary w-50" (click)="buscar()">
         Buscar
+      </button>
+
+      <button class="btn btn-success w-50" (click)="descargarExcel()">
+        Descargar Excel
       </button>
     </div>
   </div>

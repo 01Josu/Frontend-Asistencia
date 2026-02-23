@@ -76,4 +76,15 @@ export class ReporteService {
     return this.http.get<AsistenciaEmpleado[]>(`${this.apiUrl}/empleados`, { params })
       .pipe(catchError(this.handleError));
   }
+  
+  descargarExcel(inicio: string, fin: string) {
+      const params = new HttpParams()
+        .set('inicio', inicio)
+        .set('fin', fin);
+
+      return this.http.get(`${this.apiUrl}/excel`, {
+        params,
+        responseType: 'blob'  // MUY IMPORTANTE
+      });
+  }
 }

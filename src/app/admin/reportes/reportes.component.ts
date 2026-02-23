@@ -83,6 +83,25 @@ export class ReportesComponent implements OnInit {
     this.cargar();
   }
 
+  descargarExcel(): void {
+    this.reporteService.descargarExcel(this.inicio, this.fin)
+      .subscribe({
+        next: (blob: Blob) => {
+
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `reporte_${this.inicio}_${this.fin}.xlsx`;
+          a.click();
+
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.error = 'Error descargando Excel';
+        }
+      });
+  }
+
   // ===========================
   // GRÁFICO PIE
   // ===========================
@@ -152,4 +171,5 @@ export class ReportesComponent implements OnInit {
 
     return meses[mes] ?? mes;
   }
+
 }
