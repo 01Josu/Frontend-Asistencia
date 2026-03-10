@@ -26,6 +26,12 @@ export class AsistenciaComponent implements OnInit {
   mostrarModalJustificacion = false;
   motivoJustificacion = '';
 
+  justificacionesPendientes: any[] = [];
+  cantidadPendientes = 0;
+
+  mostrarListaPendientes = false;
+
+  idEmpleado!: number;
   idUsuario!: number;
   nombres = '';
   apellidos = '';
@@ -40,13 +46,38 @@ export class AsistenciaComponent implements OnInit {
 
   ngOnInit(): void {
     const idUsuario = localStorage.getItem('idUsuario');
+    const idEmpleado = localStorage.getItem('idEmpleado');
 
-    if (!idUsuario) {
+    if (!idUsuario || !idEmpleado) {
       this.router.navigate(['/']);
       return;
     }
 
     this.idUsuario = +idUsuario;
+    this.idEmpleado = +idEmpleado;
+
+    this.cargarJustificacionesPendientes();
+  }
+
+  cargarJustificacionesPendientes(): void {
+
+    this.justificacionService
+      .obtenerPendientes(this.idEmpleado)
+      .subscribe({
+        next: (data) => {
+          this.justificacionesPendientes = data;
+          this.cantidadPendientes = data.length;
+
+          console.log("PENDIENTES 👉", data);
+        },
+        error: (err) => {
+          console.error("Error cargando pendientes", err);
+        }
+      });
+  }
+
+  togglePendientes(): void {
+    this.mostrarListaPendientes = !this.mostrarListaPendientes;
   }
 
   marcarEntrada(): void {
@@ -96,6 +127,7 @@ export class AsistenciaComponent implements OnInit {
             if (this.requiereJustificacion) {
               this.mostrarModalJustificacion = true;
             }
+            this.cargarJustificacionesPendientes();
           });
         },
         error: (err) => {
@@ -161,6 +193,8 @@ export class AsistenciaComponent implements OnInit {
           this.mensaje = res;
           this.mostrarModalJustificacion = false;
           this.motivoJustificacion = '';
+          this.idAsistencia = undefined;
+          this.cargarJustificacionesPendientes();
         });
       },
       error: (err) => {
@@ -169,5 +203,11 @@ export class AsistenciaComponent implements OnInit {
         });
       }
     });
+  }
+
+  abrirJustificacion(idAsistencia: number): void {
+    this.idAsistencia = idAsistencia;
+    this.motivoJustificacion = '';
+    this.mostrarModalJustificacion = true;
   }
 }

@@ -7,6 +7,19 @@
       <p class="subtitle">
         Página de Asistencia <i class="bi bi-clock-history"></i>
       </p>
+
+      <!-- Campana -->
+      <div class="notificaciones">
+        <i 
+          class="bi bi-bell campana" 
+          data-bs-toggle="modal" 
+          data-bs-target="#modalPendientes">
+        </i>
+        <span *ngIf="cantidadPendientes > 0" class="badge">
+          {{ cantidadPendientes }}
+        </span>
+      </div>
+
     </div>
 
     <!-- Acciones -->
@@ -27,7 +40,7 @@
       </button>
     </div>
 
-    <!-- Mensaje (SIN *ngIf) -->
+    <!-- Mensaje -->
     <p class="asistencia-mensaje">
       {{ mensaje }}
     </p>
@@ -35,40 +48,108 @@
   </div>
 </div>
 
+<!-- MODAL PENDIENTES -->
+<div 
+  class="modal fade" 
+  id="modalPendientes" 
+  tabindex="-1"
+  aria-hidden="true">
 
-<!-- MODAL JUSTIFICACIÓN -->
-<div class="modal-backdrop" *ngIf="mostrarModalJustificacion">
-  <div class="modal-justificacion">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
 
-    <h3>
-      Justificación por Horas Extras
-    </h3>
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-clock-history"></i>
+          Horas extras pendientes
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-    <p class="tipo">
-      Indica el motivo de tu permanencia fuera del horario laboral.
-    </p>
+      <div class="modal-body">
 
-    <textarea
-      rows="4"
-      [(ngModel)]="motivoJustificacion"
-      placeholder="Escribe tu justificación aquí...">
-    </textarea>
+        <div *ngIf="justificacionesPendientes.length === 0" class="text-center text-muted">
+          No tienes horas extras pendientes de justificar.
+        </div>
 
-    <div class="modal-actions">
-      <button
-        class="btn-cancelar"
-        (click)="mostrarModalJustificacion = false">
-        Cancelar
-      </button>
+        <div *ngFor="let p of justificacionesPendientes" class="card mb-2">
+          <div class="card-body d-flex justify-content-between align-items-center">
 
-      <button
-        class="btn-enviar"
-        [disabled]="!motivoJustificacion.trim()"
-        (click)="enviarJustificacion()">
-        Enviar
-      </button>
+            <div>
+              <strong>{{ p.fecha }}</strong><br>
+              <small class="text-muted">
+                Salida real: {{ p.horaSalidaReal }} |
+                Esperado: {{ p.horaSalidaEsperada }}
+              </small>
+            </div>
+
+            <button
+              class="btn btn-primary btn-sm"
+              (click)="abrirJustificacion(p.idAsistencia)"
+              data-bs-dismiss="modal">
+
+              <i class="bi bi-pencil-square"></i>
+              Justificar
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
-
   </div>
 </div>
 
+<!-- MODAL PENDIENTES (RESPONSIVO) -->
+<div 
+  class="modal fade" 
+  id="modalPendientes" 
+  tabindex="-1"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen-sm-down">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-clock-history"></i>
+          Horas extras pendientes
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div *ngIf="justificacionesPendientes.length === 0" class="text-center text-muted">
+          No tienes horas extras pendientes de justificar.
+        </div>
+
+        <div *ngFor="let p of justificacionesPendientes" class="card mb-2">
+          <div class="card-body d-flex justify-content-between align-items-center flex-column flex-sm-row">
+
+            <div class="mb-2 mb-sm-0 text-center text-sm-start">
+              <strong>{{ p.fecha }}</strong><br>
+              <small class="text-muted">
+                Salida real: {{ p.horaSalidaReal }} |
+                Esperado: {{ p.horaSalidaEsperada }}
+              </small>
+            </div>
+
+            <button
+              class="btn btn-primary btn-sm"
+              (click)="abrirJustificacion(p.idAsistencia)"
+              data-bs-dismiss="modal">
+
+              <i class="bi bi-pencil-square"></i>
+              Justificar
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>

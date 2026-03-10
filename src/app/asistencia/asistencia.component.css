@@ -19,7 +19,7 @@
   border: 1px solid #cce0ff;
   box-shadow: 0 8px 20px rgba(0, 111, 255, 0.12);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -259,4 +259,28 @@ button.btn-logout:hover {
 .btn-enviar:disabled {
   opacity: 0.5;
   box-shadow: none;
+}
+
+
+.notificaciones{
+  position:absolute;
+  top:20px;
+  right:25px;
+}
+
+.campana{
+  font-size:24px;
+  color:#004aad;
+}
+
+.badge{
+  position:absolute;
+  top:-6px;
+  right:-8px;
+  background:#ff3b30;
+  color:white;
+  font-size:12px;
+  font-weight:700;
+  padding:3px 6px;
+  border-radius:50%;
 }

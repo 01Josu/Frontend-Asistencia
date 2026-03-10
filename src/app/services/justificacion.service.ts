@@ -3,6 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
+export interface JustificacionPendiente {
+  idAsistencia: number;
+  fecha: string;
+  horaSalidaReal: string;
+  horaSalidaEsperada: string;
+}
+
 export interface JustificacionRequest {
   idAsistencia: number;
   motivo: string;
@@ -24,6 +31,12 @@ export class JustificacionService {
       this.baseUrl,
       payload,
       { responseType: 'text' }
+    );
+  }
+
+  obtenerPendientes(idUsuario: number): Observable<JustificacionPendiente[]> {
+    return this.http.get<JustificacionPendiente[]>(
+      `${this.baseUrl}/pendientes/${idUsuario}`
     );
   }
 }
