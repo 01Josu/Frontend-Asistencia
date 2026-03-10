@@ -16,7 +16,7 @@ export interface MarcarAsistenciaResponse {
   tipo?: 'ENTRADA' | 'SALIDA';
 
   requiereJustificacion?: boolean;
-  tipoJustificacion?: 'TARDANZA' | 'SOBRETIEMPO' | null;
+  tipoJustificacion?: 'SOBRETIEMPO' | null;
 }
 
 @Injectable({

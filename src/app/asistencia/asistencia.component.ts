@@ -20,7 +20,7 @@ export class AsistenciaComponent implements OnInit {
 
   mensaje = '';
   requiereJustificacion = false;
-  tipoJustificacion: 'TARDANZA' | 'SOBRETIEMPO' | null = null;
+  tipoJustificacion: 'SOBRETIEMPO' | null = null;
   idAsistencia?: number;
 
   mostrarModalJustificacion = false;
@@ -63,11 +63,6 @@ export class AsistenciaComponent implements OnInit {
             this.mensaje = res.mensaje;
 
             this.idAsistencia = res.idAsistencia;
-            this.requiereJustificacion = !!res.requiereJustificacion;
-            this.tipoJustificacion = res.tipoJustificacion ?? null;
-            if (this.requiereJustificacion) {
-              this.mostrarModalJustificacion = true;
-            }
           });
         },
         error: (err) => {
@@ -93,8 +88,11 @@ export class AsistenciaComponent implements OnInit {
             this.mensaje = res.mensaje;
 
             this.idAsistencia = res.idAsistencia;
-            this.requiereJustificacion = !!res.requiereJustificacion;
+
+            this.requiereJustificacion = res.requiereJustificacion === true;
+
             this.tipoJustificacion = res.tipoJustificacion ?? null;
+
             if (this.requiereJustificacion) {
               this.mostrarModalJustificacion = true;
             }
