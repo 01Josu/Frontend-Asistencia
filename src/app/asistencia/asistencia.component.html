@@ -48,60 +48,7 @@
   </div>
 </div>
 
-<!-- MODAL PENDIENTES -->
-<div 
-  class="modal fade" 
-  id="modalPendientes" 
-  tabindex="-1"
-  aria-hidden="true">
-
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="bi bi-clock-history"></i>
-          Horas extras pendientes
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-
-        <div *ngIf="justificacionesPendientes.length === 0" class="text-center text-muted">
-          No tienes horas extras pendientes de justificar.
-        </div>
-
-        <div *ngFor="let p of justificacionesPendientes" class="card mb-2">
-          <div class="card-body d-flex justify-content-between align-items-center">
-
-            <div>
-              <strong>{{ p.fecha }}</strong><br>
-              <small class="text-muted">
-                Salida real: {{ p.horaSalidaReal }} |
-                Esperado: {{ p.horaSalidaEsperada }}
-              </small>
-            </div>
-
-            <button
-              class="btn btn-primary btn-sm"
-              (click)="abrirJustificacion(p.idAsistencia)"
-              data-bs-dismiss="modal">
-
-              <i class="bi bi-pencil-square"></i>
-              Justificar
-            </button>
-
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PENDIENTES (RESPONSIVO) -->
+<!-- MODAL PENDIENTES RESPONSIVO -->
 <div 
   class="modal fade" 
   id="modalPendientes" 
@@ -121,14 +68,16 @@
 
       <div class="modal-body">
 
-        <div *ngIf="justificacionesPendientes.length === 0" class="text-center text-muted">
+        <!-- No hay pendientes -->
+        <div *ngIf="justificacionesPendientes.length === 0" class="text-center text-muted py-3">
           No tienes horas extras pendientes de justificar.
         </div>
 
+        <!-- Lista de pendientes -->
         <div *ngFor="let p of justificacionesPendientes" class="card mb-2">
-          <div class="card-body d-flex justify-content-between align-items-center flex-column flex-sm-row">
+          <div class="card-body d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center">
 
-            <div class="mb-2 mb-sm-0 text-center text-sm-start">
+            <div class="mb-2 mb-sm-0 text-center text-sm-start w-100 w-sm-auto">
               <strong>{{ p.fecha }}</strong><br>
               <small class="text-muted">
                 Salida real: {{ p.horaSalidaReal }} |
@@ -137,10 +86,9 @@
             </div>
 
             <button
-              class="btn btn-primary btn-sm"
+              class="btn btn-primary btn-sm ms-sm-3"
               (click)="abrirJustificacion(p.idAsistencia)"
               data-bs-dismiss="modal">
-
               <i class="bi bi-pencil-square"></i>
               Justificar
             </button>
@@ -151,5 +99,41 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- MODAL JUSTIFICACIÓN -->
+<div class="modal-backdrop" *ngIf="mostrarModalJustificacion">
+  <div class="modal-justificacion">
+
+    <h3>
+      Justificación por Horas Extras
+    </h3>
+
+    <p class="tipo">
+      Indica el motivo de tu permanencia fuera del horario laboral.
+    </p>
+
+    <textarea
+      rows="4"
+      [(ngModel)]="motivoJustificacion"
+      placeholder="Escribe tu justificación aquí...">
+    </textarea>
+
+    <div class="modal-actions">
+      <button
+        class="btn-cancelar"
+        (click)="mostrarModalJustificacion = false">
+        Cancelar
+      </button>
+
+      <button
+        class="btn-enviar"
+        [disabled]="!motivoJustificacion.trim()"
+        (click)="enviarJustificacion()">
+        Enviar
+      </button>
+    </div>
+
   </div>
 </div>
